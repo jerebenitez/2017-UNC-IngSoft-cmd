@@ -1,0 +1,48 @@
+title Encontrar camino más corto
+
+Usuario->Buscador: buscar_aula(id)
+Buscador->Mapa: existe(id)
+
+alt if exists
+    Mapa->Buscador: true
+    Buscador->Mapa: ubicacion(id)
+    Mapa->Buscador: ubicacion_de_id
+    Buscador->Mapa: actualizar_vista(ubicacion_de_id)
+else if not exists
+    Mapa->Buscador: false
+    Buscador->Usuario: error
+end
+
+title Encontrar camino más corto
+
+Usuario->Buscador: camino(inicio, fin)
+Buscador->Mapa: inicio in mapa
+
+alt if exists
+    Mapa->Buscador: true
+    Buscador->Mapa: fin in mapa
+    alt if exists
+        Mapa->Buscador: true
+        Buscador->Mapa: camino_mas_corto(inicio, fin)
+        Mapa->Buscador: camino
+        Buscador->Mapa: mostrar(camino)
+    else if not exists
+        Mapa->Buscador: false
+        Buscador->Usuario: error
+    end
+else if not exists
+    Mapa->Buscador: false
+    Buscador->Usuario: error
+end
+
+title Zoom
+
+Usuario->Movil: pinch_in | pinch out
+Movil->Buscador: deslizamiento
+Buscador->Mapa: zoom(deslizamiento)
+
+title Explorar
+
+Usuario->Movil: deslizar_dedo
+Movil->Buscador: pos_x, pos_y
+Buscador->Mapa: actualizar_vista(pos_x, pos_y)
