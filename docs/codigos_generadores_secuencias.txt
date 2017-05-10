@@ -46,3 +46,59 @@ title Explorar
 Usuario->Movil: deslizar_dedo
 Movil->Buscador: pos_x, pos_y
 Buscador->Mapa: actualizar_vista(pos_x, pos_y)
+
+title Reserva de aulas
+
+Usuario->Buscador: hacer_reserva(aula)
+Buscador->Usuario: pedir(fecha, período)
+Usuario->Buscador: fecha, período
+Buscador->Buscador: validar(fecha, período)
+alt if valid
+    Buscador->Mapa: reservar(aula, fecha, período)
+    Mapa->Mapa: validar_reserva(aula, fecha, período)
+    alt if not superpuesto período
+        Mapa->Mapa: actualizar_reservas(aula)
+        Mapa->Buscador: reserva_validada
+        Buscador->Usuario: exito
+        Buscador->Usuario: mostrar_reservas()
+    else if superpuesto período
+        Mapa->Buscador: reserva_no_validada
+        Buscador->Usuario: error
+    end
+else if not valid
+    Buscador->Usuario: error
+    Buscador->Buscador: actualizar_focus()
+end
+
+title Detalle de las aulas
+
+Usuario->Buscador: tap(aula)
+Buscador->Mapa: detalle(aula)
+Mapa->Buscador: descripción_aula
+
+alt if reserva in aula
+    Mapa->Buscador: lista_reservas
+else if not reserva in aula
+    Mapa->Buscador: lista_vacía
+end
+Buscador->Usuario: mostrar(info_aula)
+
+title Búsqueda por parámetros
+
+Usuario->Buscador: busqueda_avanzada
+Buscador->Usuario: mostrar_ventana(avanzada)
+Usuario->Buscador: lista_parametros
+Buscador->Buscador: validar(lista_parametros)
+
+alt if parametros valid
+    Buscador->Mapa: encontrar_aulas(parametros)
+    alt if exists
+        Mapa->Buscador: lista_aulas
+    else if not exists
+        Mapa->Buscador: lista_vacia
+    end
+    Buscador->Usuario: mostrar(lista)
+else if parametros not valid
+    Buscador->Usuario: mostrar_error()
+    Buscador->Buscador: cambiar_focus()
+end
