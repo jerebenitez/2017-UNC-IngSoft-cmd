@@ -2,7 +2,7 @@ package modelo;
 
 import android.database.Cursor;
 
-import cmd.controlador.GestorDeDatos;
+import controlador.GestorDeDatos;
 
 /**
  * Created by Lucas on 25/06/2017.
